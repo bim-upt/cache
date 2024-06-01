@@ -1,0 +1,35 @@
+#add all Verilog source files, separated by spaces
+set sourcefiles {LRU.v cache.v cacheLine.v}
+
+# set name of the top module
+set topmodule cache_tb
+
+###################################################
+#####DO NOT MODIFY THE SCRIPT BELOW THIS LINE#####
+###################################################
+
+# quit current simulation if any
+quit -sim
+
+# empty the work library if present
+if [file exists "work"] {vdel -all}
+#create a new work library
+vlib work
+
+# run the compiler
+puts "Starting compilation of $sourcefiles"
+if [catch {eval vlog $sourcefiles} result] {
+    puts "Compilation failed: $result"
+    return
+}
+puts "Compilation successful"
+
+puts "Starting simulation of $topmodule"
+if [catch {eval vsim -voptargs=+acc $topmodule} result] {
+    puts "Simulation loading failed: $result"
+    return
+}
+puts "Simulation loading successful"
+
+add wave *
+run -all
